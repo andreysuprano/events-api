@@ -1,10 +1,10 @@
 {
   "type": "mysql",
-  "host": "adcampolargo.com",
+  "host": "apis.adcampolargo.com",
   "port": 3306,
-  "username": "adcampol_eventsapp",
-  "password": "spf4sc;c{eP2",
-  "database": "adcampol_events",
+  "username": "apis_events",
+  "password": "%2D-ke^08Mf--!lv",
+  "database": "apis_events_prod",
   "synchronize": true,
   "logging": false,
   "migrations": [
