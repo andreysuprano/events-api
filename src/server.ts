@@ -5,7 +5,7 @@ import './database/connection';
 import routes from './routes';
 import errorHandler from './errors/handler';
 
-const port = process.env.PORT || 3333;
+const port = process.env.PORT || 3000;
 const app = express();
 app.use(express.json());
 
