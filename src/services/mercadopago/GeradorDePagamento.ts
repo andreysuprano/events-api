@@ -1,12 +1,28 @@
 import mercadopago from "mercadopago";
 import { CreatePreferencePayload } from "mercadopago/models/preferences/create-payload.model";
 import { Identification } from "mercadopago/shared/payer-identification";
+import { getRepository } from "typeorm";
 import Evento from "../../models/Evento";
 import Inscricao from "../../models/Inscricao";
+import Usuario from "../../models/Usuario";
 
 export const GerarPagamento = async (inscrito:Inscricao, evento:Evento) => {
+
+    const event = await getRepository(Evento)
+        .createQueryBuilder("evento")
+        .leftJoinAndSelect("evento.usuario", "usuario")
+        .where("evento.uuid = :uuid", {uuid:evento.uuid})
+        .getOne();
+
+    const user = await getRepository(Usuario)
+        .createQueryBuilder("usuario")
+        .leftJoinAndSelect("usuario.configuracao", "configuracao")
+        .where("usuario.uuid = :uuid", {uuid:event?.usuario.uuid})
+        .getOne();
+
+    if(user)
     mercadopago.configure({
-        access_token: 'TEST-8990299850686526-092619-02ec8fcb2801e4c4f302560d829e1ada-201829909'
+        access_token: user?.configuracao?.access_token
     });
 
     const identificacao:Identification ={
@@ -28,7 +44,9 @@ export const GerarPagamento = async (inscrito:Inscricao, evento:Evento) => {
             identification:identificacao
         },
         back_urls:{
-            failure:`https://eventos.adcampolargo.com/${evento.slug}/feedback/`
+            failure:`http://localhost:3000/payment/${evento.slug}/feedback/`,
+            success:`http://localhost:3000/payment/${evento.slug}/feedback/`,
+            pending:`http://localhost:3000/payment/${evento.slug}/feedback/`            
         }
     }
     const preferenceResponse = await mercadopago.preferences.create(preference);

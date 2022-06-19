@@ -5,6 +5,7 @@ import Bcrypt from 'bcrypt';
 import Jwt from 'jsonwebtoken';
 import * as AuthConfig from '../config/auth.json';
 import { emailSender } from '../utils/EmailSender';
+import Configuracao from '../models/Configuracao';
 
 export const register = async (request: Request, response: Response) => {
     const { username, email, password, nome } = request.body;
@@ -58,4 +59,28 @@ export const getProfile = async (request:Request, response:Response) =>{
         status:user?.status
     }
     return response.status(200).json(userDTO);
+}
+
+export const addConfiguration = async (request:Request, response:Response) =>{
+    const { access_token, public_key } = request.body;
+    if(access_token && public_key){
+        const config = await getRepository<Configuracao>(Configuracao).save(request.body)
+        await getRepository(Usuario)
+            .createQueryBuilder()
+            .update()
+            .set({ configuracao:config })
+            .where({uuid:request.params.uuid})
+            .execute()
+        response.status(200).json(config);
+    }
+    return response.status(400).json({message:"Os Parâmetros são obrigatórios"});
+}
+
+export const getConfiguration = async (request:Request, response:Response) =>{
+   const user = await getRepository(Usuario)
+        .createQueryBuilder("usuario")
+        .leftJoinAndSelect("usuario.configuracao", "configuracao")
+        .where("usuario.uuid = :uuid", {uuid:request.params.uuid})
+        .getOne();
+    return response.status(200).json(user);
 }

@@ -1,4 +1,5 @@
-import { Entity, Column, CreateDateColumn, UpdateDateColumn, Generated, OneToMany, PrimaryColumn } from 'typeorm';
+import { Entity, Column, CreateDateColumn, UpdateDateColumn, Generated, OneToMany, PrimaryColumn, OneToOne, JoinColumn } from 'typeorm';
+import Configuracao from './Configuracao';
 import Evento from './Evento';
 
 @Entity()
@@ -16,8 +17,8 @@ export default class Usuario{
 
     @Column()
     email:string;
-
-    @Column()
+    
+    @Column({select: false})
     password:string;
 
     @Column()
@@ -31,4 +32,8 @@ export default class Usuario{
 
     @OneToMany(()=> Evento, (evento)=> evento.usuario)
     eventos:Evento[]
+    
+    @OneToOne(() => Configuracao)
+    @JoinColumn()
+    configuracao: Configuracao
 }

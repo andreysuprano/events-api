@@ -19,7 +19,7 @@ export default class Evento{
     @Column()
     vagas:number;    
     
-    @Column()
+    @Column({type:'float'})
     valor:number;
     
     @Column()

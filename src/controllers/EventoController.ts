@@ -29,12 +29,10 @@ export const novoEvento = async (request: Request, response: Response) =>{
         evento.usuario = usuario;
 
     const eventoPersistido = await getRepository(Evento).save(evento);
-
     if(eventoPersistido)
-        return response.status(201).send();
+        return response.status(201).send({uuid:eventoPersistido.uuid});
     
 }   
-
 
 export const pegarEventos = async (request: Request, response: Response) =>{
     const usuario = await getRepository(Usuario)
@@ -46,4 +44,36 @@ export const pegarEventos = async (request: Request, response: Response) =>{
     if(usuario)
         return response.status(200).send(usuario.eventos);
     response.status(400).send({message:'Nenhum evento encontrado!'});
+}  
+
+export const pegarEventoPorId = async (request: Request, response: Response) =>{
+    const event = await getRepository(Evento)
+        .createQueryBuilder("evento")
+        .where({uuid:request.params.event})
+        .getOne();
+    if(event)
+        return response.status(200).send(event);
+    response.sendStatus(204);
+}  
+
+export const pegarEventoParaInscricao = async (request: Request, response: Response) =>{
+    let event = await getRepository(Evento)
+        .createQueryBuilder("evento")
+        .innerJoinAndSelect("evento.questoes", "questao")
+        .innerJoinAndSelect("evento.usuario", "usuario")
+        .where("evento.slug = :slug", { slug:request.params.slug })
+        .getOne();
+
+    if(!event)
+        event = await getRepository(Evento)
+            .createQueryBuilder("evento")
+            .innerJoinAndSelect("evento.usuario", "usuario")
+            .where("evento.slug = :slug", { slug:request.params.slug })
+            .getOne();
+
+    if(event)
+        return response.status(200).send(event);
+
+    
+    response.sendStatus(204);
 }  

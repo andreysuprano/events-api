@@ -16,6 +16,8 @@ app.use(express.urlencoded({
 app.use(cors());
 app.use(routes);
 app.use(errorHandler);
-app.listen(port);
+app.listen(port, ()=>{
+    console.log('Listen Port: '+port)
+});
 
 

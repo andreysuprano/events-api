@@ -7,9 +7,12 @@ import * as AuthConfig from '../config/auth.json';
 
 export const authUser = async (request: Request, response: Response) => {
     const { email, password } = request.body;
-    console.log(password)
-    const user = await getRepository(Usuario).findOne({ where: { email: email } });
-    
+    const user = await getRepository(Usuario)
+        .createQueryBuilder("usuario")
+        .leftJoinAndSelect("usuario.configuracao", "configuracao")
+        .addSelect("usuario.password")
+        .where("usuario.email = :email", {email:email})
+        .getOne();
     if (!user)
         return response.status(401).send();
 
@@ -18,10 +21,11 @@ export const authUser = async (request: Request, response: Response) => {
          
     if (!await Bcrypt.compare(password, user.password))
         return response.status(401).send();
-
+        
     const token = Jwt.sign(
         { 
             id: user.uuid, 
+            public: user?.configuracao?.public_key
         }, 
         AuthConfig.secret, 
         { expiresIn: 86400 }

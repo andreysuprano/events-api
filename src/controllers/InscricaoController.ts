@@ -2,7 +2,9 @@ import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import Evento from "../models/Evento";
 import Inscricao from "../models/Inscricao";
+import Pagamento from "../models/Pagamento";
 import Resposta from "../models/Resposta";
+import Usuario from "../models/Usuario";
 import { GerarPagamento } from "../services/mercadopago/GeradorDePagamento";
 
 type RespostaMapType = {
@@ -20,7 +22,13 @@ export const criaInscricao = async (request: Request, response: Response) => {
     const {inscrito, respostas} = request.body;
     const eventUuid = request.params.event;
 
-    const evento = await getRepository(Evento).findOne({ where: { uuid : eventUuid } });
+    const evento = await getRepository(Evento).findOne({ where: { uuid : eventUuid.replace('}','') }, relations:["usuario"] });
+    const user = await getRepository(Usuario)
+        .createQueryBuilder("usuario")
+        .leftJoinAndSelect("usuario.configuracao", "configuracao")
+        .where("usuario.uuid = :uuid", {uuid:evento?.usuario.uuid})
+        .getOne();
+
     if(!evento)
         return response.status(400).send({message:'Evento não encontrado!'});
 
@@ -47,8 +55,12 @@ export const criaInscricao = async (request: Request, response: Response) => {
         });
 
         respostaView.preference = await GerarPagamento(inscricao, evento);
-        response.status(200).send(respostaView);
-    }catch{
+        response.status(200).send({
+            preference:respostaView.preference, 
+            uuid:respostaView.inscrito.uuid,
+            public_key:user?.configuracao.public_key
+        });
+    }catch(err){
         response.status(400).send({message:'Erro de persistencia'})
     }
 
@@ -68,13 +80,13 @@ export const buscaInscricao = async (request: Request, response: Response) => {
 }
 
 export const buscaInscricoes = async (request: Request, response: Response) => {
-    const inscricao = await getRepository(Inscricao)
-    .createQueryBuilder("inscricao")
-    .leftJoinAndSelect("inscricao.respostas", "resposta")
-    .leftJoinAndSelect("inscricao.pagamento", "pagamento")
-    .getMany();
+    const evento = request.params.event;
+    const inscricoes = await getRepository(Inscricao)
+        .createQueryBuilder("inscricao")
+        .where("eventoUuid = :uuid", { uuid: evento })
+        .getMany();
     
-    if(inscricao)
-        return response.status(200).send(inscricao);
+    if(inscricoes)
+        return response.status(200).send(inscricoes);
     response.send({message:'Nenhuma inscrição encontrada!'})
 }
