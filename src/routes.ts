@@ -18,6 +18,11 @@ routes.use((request:Request,response:Response, next:NextFunction) => {
     next();
 });
 
+routes.post('/', (request:Request,response:Response)=>{
+    response.status(200).send({API:'Events API 1.0.40 - Latest'})
+});
+
+
 /**
  * Auth Routes, JWT generate and Validate.
  */
