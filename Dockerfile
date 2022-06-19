@@ -5,5 +5,5 @@ COPY . ./
 RUN npm install
 COPY --chown=node:node . .
 RUN npm run build
-EXPOSE 3000
+EXPOSE 3333
 CMD [ "node", "./dist/server.js" ]
