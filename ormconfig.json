@@ -1,6 +1,6 @@
 {
   "type": "mysql",
-  "host": "apis.adcampolargo.com",
+  "host": "45.90.223.101",
   "port": 3306,
   "username": "apis_events",
   "password": "%2D-ke^08Mf--!lv",
