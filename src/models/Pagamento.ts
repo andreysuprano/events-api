@@ -21,11 +21,8 @@ export default class Pagamento{
     
     @Column()
     ordem_compra:string;    
-    
-    @Column()
-    valor:string;
-    
-    @Column()
+        
+    @Column({default:'no description'})
     descricao:string;
 
     @CreateDateColumn()
