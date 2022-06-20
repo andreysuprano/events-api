@@ -70,7 +70,7 @@ export const buscaInscricao = async (request: Request, response: Response) => {
     const inscricao = await getRepository(Inscricao)
         .createQueryBuilder("inscricao")
         .innerJoinAndSelect("inscricao.respostas", "resposta")
-        .innerJoinAndSelect("inscricao.pagamento", "pagamento")
+        .leftJoinAndSelect("inscricao.pagamento", "pagamento")
         .where("inscricao.uuid = :uuid",{uuid:inscritoUuid})
         .getOne();
     
