@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import Evento from "../models/Evento";
 import Inscricao from "../models/Inscricao";
-import Pagamento from "../models/Pagamento";
 import Resposta from "../models/Resposta";
 import Usuario from "../models/Usuario";
 import { GerarPagamento } from "../services/mercadopago/GeradorDePagamento";
@@ -33,11 +32,11 @@ export const criaInscricao = async (request: Request, response: Response) => {
         return response.status(400).send({message:'Evento não encontrado!'});
 
     let inscricao = new Inscricao();
-    inscricao.evento = evento;
-    inscricao.cpf = inscrito.cpf;
-    inscricao.nome = inscrito.nome;
-    inscricao.email = inscrito.email;
-    inscricao.telefone = inscrito.telefone;
+        inscricao.evento = evento;
+        inscricao.cpf = inscrito.cpf;
+        inscricao.nome = inscrito.nome;
+        inscricao.email = inscrito.email;
+        inscricao.telefone = inscrito.telefone;
     
     try{
         inscricao = await getRepository<Inscricao>(Inscricao).save(inscricao);
@@ -71,6 +70,7 @@ export const buscaInscricao = async (request: Request, response: Response) => {
     const inscricao = await getRepository(Inscricao)
         .createQueryBuilder("inscricao")
         .innerJoinAndSelect("inscricao.respostas", "resposta")
+        .innerJoinAndSelect("inscricao.pagamento", "pagamento")
         .where("inscricao.uuid = :uuid",{uuid:inscritoUuid})
         .getOne();
     
@@ -83,6 +83,7 @@ export const buscaInscricoes = async (request: Request, response: Response) => {
     const evento = request.params.event;
     const inscricoes = await getRepository(Inscricao)
         .createQueryBuilder("inscricao")
+        .leftJoinAndSelect("inscricao.pagamento", "pagamento")
         .where("eventoUuid = :uuid", { uuid: evento })
         .getMany();
     

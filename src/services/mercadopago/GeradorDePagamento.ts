@@ -44,9 +44,9 @@ export const GerarPagamento = async (inscrito:Inscricao, evento:Evento) => {
             identification:identificacao
         },
         back_urls:{
-            failure:`http://https://events.adcampolargo.com/payment/${evento.slug}/feedback/`,
-            success:`http://https://events.adcampolargo.com/payment/${evento.slug}/feedback/`,
-            pending:`http://https://events.adcampolargo.com/payment/${evento.slug}/feedback/`            
+            failure:`http://https://events.adcampolargo.com/payment/${inscrito.uuid}/feedback/`,
+            success:`http://https://events.adcampolargo.com/payment/${inscrito.uuid}/feedback/`,
+            pending:`http://https://events.adcampolargo.com/payment/${inscrito.uuid}/feedback/`            
         }
     }
     const preferenceResponse = await mercadopago.preferences.create(preference);

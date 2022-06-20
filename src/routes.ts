@@ -5,6 +5,7 @@ import { authMiddleware } from './middlewares/auth';
 import { novoEvento, pegarEventoParaInscricao, pegarEventoPorId, pegarEventos } from './controllers/EventoController';
 import { novaQuestao } from './controllers/QuestaoController';
 import { buscaInscricao, buscaInscricoes, criaInscricao } from './controllers/InscricaoController';
+import { insereDadosPagamento } from './controllers/PagamentoController';
 
 const routes = Router();
 
@@ -55,6 +56,11 @@ routes.post('/quest/:event', authMiddleware, novaQuestao);
 routes.post('/inscricao/:event', criaInscricao);
 routes.get('/inscricao/:event', buscaInscricoes);
 routes.get('/inscricao/:inscrito', buscaInscricao);
+
+/**
+ * Payment Routes
+ */
+ routes.post('/payment', insereDadosPagamento);
 
 
 export default routes;

@@ -20,7 +20,7 @@ export default class Pagamento{
     payment_type:string;    
     
     @Column()
-    venda_id:string;    
+    ordem_compra:string;    
     
     @Column()
     valor:string;
