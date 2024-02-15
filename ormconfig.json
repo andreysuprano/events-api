@@ -1,10 +1,10 @@
 {
   "type": "mysql",
-  "host": "45.90.223.101",
+  "host": "leitura-inteligente_events-db",
   "port": 3306,
-  "username": "apis_events",
-  "password": "${env}",
-  "database": "apis_events_prod",
+  "username": "mysql",
+  "password": "6f36cdb57fbd6e13c5f8",
+  "database": "leitura-inteligente",
   "synchronize": true,
   "logging": false,
   "migrations": [
