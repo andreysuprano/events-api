@@ -1,20 +1,15 @@
 {
-  "type": "mysql",
-  "host": "leitura-inteligente_events-db",
-  "port": 3306,
-  "username": "mysql",
-  "password": "6f36cdb57fbd6e13c5f8",
-  "database": "leitura-inteligente",
-  "synchronize": true,
-  "logging": false,
-  "migrations": [
-    "./dist/database/migrations/*.js"
-  ],
-  "entities": [
-    "./dist/models/*.js"
-
-  ],
-  "cli": {
-    "migrationsDir": "./dist/database/migrations"
-  }
+	"type": "mysql",
+	"host": "195.35.43.156",
+	"port": 3306,
+	"username": "mysql",
+	"password": "6f36cdb57fbd6e13c5f8",
+	"database": "leitura-inteligente",
+	"synchronize": true,
+	"logging": false,
+	"migrations": [ "./dist/database/migrations/*.js" ],
+	"entities": [ "./dist/models/*.js" ],
+	"cli": {
+		"migrationsDir": "./dist/database/migrations"
+	}
 }
